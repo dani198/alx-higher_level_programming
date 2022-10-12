@@ -1,31 +1,38 @@
 #!/usr/bin/python3
+""" Printing a square"""
+
+
 class Square:
+    """Private instance attribute: size
+    Instantiation with area method prints squares """
+
     def __init__(self, size=0):
+        """Initializes attribute size """
         self.__size = size
 
-    # Property
+    def area(self):
+        """Calculate area of square"""
+        return (self.__size * self.__size)
+
     @property
     def size(self):
+        """Setter for square"""
         return self.__size
 
-    # Setter modifies
     @size.setter
     def size(self, value):
-        if type(value) != int:
-            raise TypeError('size must be an integer')
+        """Initializes attribute size """
+        if (type(value) is not int):
+            raise TypeError("size must be an integer")
         elif value < 0:
-            raise ValueError('size must be >= 0')
+            raise ValueError("size must be >= 0")
         else:
             self.__size = value
 
-    def area(self):
-        return self.__size ** 2
-
     def my_print(self):
-        size = self.__size
-
-        if size == 0:
+        for i in range(self.__size):
+            for j in range(self.__size):
+                print('#', end="")
             print()
-
-        for row in range(size):
-            print('#' * size)
+        if self.size <= 0:
+            print()
