@@ -1,21 +1,23 @@
 #!/usr/bin/python3
+"""Script displays all values in states table that match given argument
+Takes four arguments:
+    mysql username
+    mysql password
+    database name
+    name to match
+Connects to default host (localhost) and port (3306)
 """
-Filter states by user input
-It takes in an argument and displays all values in the states table
-"""
-
-import MySQLdb
-from sys import argv
 
 if __name__ == "__main__":
-    db = MySQLdb.connect(host="localhost",
-                         user=argv[1], passwd=argv[2], db=argv[3])
-    query = "SELECT * FROM states\
-             WHERE states.name LIKE BINARY '{}'\
-             ORDER BY states.id ASC".format(argv[4])
-    cursor = db.cursor()
-    cursor.execute(query)
-    for state in cursor.fetchall():
-        print(state)
-    cursor.close()
+    from sys import argv
+    import MySQLdb
+    db = MySQLdb.connect(user=argv[1], passwd=argv[2], db=argv[3])
+    c = db.cursor()
+    c.execute("""SELECT * FROM states WHERE name = '{}'\
+            ORDER BY states.id ASC""".format(argv[4]))
+    rows = c.fetchall()
+    for row in rows:
+        if row[1] == argv[4]:
+            print(row)
+    c.close()
     db.close()

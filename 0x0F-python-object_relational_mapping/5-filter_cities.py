@@ -1,24 +1,27 @@
 #!/usr/bin/python3
+"""Script takes state name as an argument and lists all cities of given state
+Takes three arguments:
+    mysql username
+    mysql password
+    database name
+Connects to default host (localhost) and port (3306)
 """
-Filter cities by state input safe from MySQL injections!
-takes in the name of a state as an argument and lists all cities of that state
-"""
-
-import MySQLdb
-from sys import argv
 
 if __name__ == "__main__":
-    db = MySQLdb.connect(host="localhost",
-                         user=argv[1], passwd=argv[2], db=argv[3])
-    query = "SELECT cities.name\
-             FROM cities JOIN states\
-             ON cities.state_id = states.id\
-             WHERE states.name = %s"
-    cursor = db.cursor()
-    cursor.execute(query, (argv[4], ))
+    from sys import argv
+    import MySQLdb
+    db = MySQLdb.connect(user=argv[1], passwd=argv[2], db=argv[3])
+    c = db.cursor()
+    param = (argv[4], )
+    c.execute("SELECT * FROM cities\
+            INNER JOIN states ON cities.state_id = states.id\
+            WHERE states.name = %s\
+            ORDER BY cities.id ASC", param)
+    rows = c.fetchall()
     cities = []
-    for city in cursor.fetchall():
-        cities.append(city[0])
-    print(", ".join(cities))
-    cursor.close()
+    for row in rows:
+        if row[4] == param[0]:
+            cities.append(row[2])
+    print(', '.join(cities))
+    c.close()
     db.close()
